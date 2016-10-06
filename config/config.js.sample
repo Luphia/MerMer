@@ -1,0 +1,12 @@
+module.exports = {
+	url: '',
+	api: ''
+	frontend: '',
+	resourceAPI: '',
+	db: {
+		type: '',
+		path: '',
+		user: '',
+		password: ''
+	}
+};
