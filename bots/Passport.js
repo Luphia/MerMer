@@ -45,7 +45,7 @@ Bot.prototype.init = function (config) {
 	passport.use(new FacebookStrategy({
 			clientID: config.facebook.id,
 			clientSecret: config.facebook.secret,
-			callbackURL: "/auth/facebook/callback",
+			callbackURL: url.resolve(config.url, "/auth/facebook/callback"),
 			profileFields: ['id', 'displayName', 'photos', 'email']
 		},
 		facebookProcess
@@ -80,24 +80,12 @@ Bot.prototype.facebook_authenticate = function (req, res, next) {
 Bot.prototype.facebook_callback = function (req, res, next) {
 	var self = this;
 	passport.authenticate('facebook', function (err, user, info) {
-		var passto = function (query) {
-			if(self.config.frontend) {
-				var redirectURL, tmp = url.parse(self.config.frontend + '/cn/fbCheck');
-				query.data = new Buffer(JSON.stringify(query.data)).toString('base64');
-				tmp.query = query;
-				res.result.setResult(302);
-				res.result.setData({Location: url.format(tmp)});
-			}
-			next();
-		};
 		if(!user) {
 			// auth failed
 			var e = new Error('Facebook authorization failed');
 			e.code = '68101';
 			res.result.setErrorCode(e.code);
 			res.result.setMessage(e.message);
-
-			passto(res.result.toJSON());
 		}
 		else {
 			self.getToken(user, function (e, d) {
@@ -117,7 +105,6 @@ Bot.prototype.facebook_callback = function (req, res, next) {
 					res.result.setData(d);
 					res.result.setSession({uid: d.uid});
 				}
-				passto(res.result.toJSON());
 			});
 		}
 	})(req, res, next);
