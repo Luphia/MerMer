@@ -80,7 +80,11 @@ Bot.prototype.facebook_authenticate = function (req, res, next) {
 Bot.prototype.facebook_callback = function (req, res, next) {
 	var self = this;
 	passport.authenticate('facebook', function (err, user, info) {
-		if(!user) {
+		if(err) {
+			err.code = '68101';
+			res.result.setError(err);
+		}
+		else if(!user) {
 			// auth failed
 			var e = new Error('Facebook authorization failed');
 			e.code = '68101';
@@ -113,7 +117,11 @@ Bot.prototype.facebook_token = function (req, res, next) {
 	var self = this;
 	req.query.access_token = req.query.access_token || req.params.access_token;
 	passport.authenticate('facebook-token', function (err, user, info) {
-		if(!user) {
+		if(err) {
+			err.code = '68101';
+			res.result.setError(err);
+		}
+		else if(!user) {
 			// auth failed
 			var e = new Error('Facebook authorization failed');
 			e.code = '68101';
