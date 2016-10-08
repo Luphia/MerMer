@@ -1,6 +1,6 @@
 {
   "name": "mermer",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "instant messaging service",
   "main": "bin/start.js",
   "scripts": {
