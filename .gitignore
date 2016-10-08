@@ -44,5 +44,3 @@ private.*
 *.private
 *.private.*
 
-# Public folder
-public
