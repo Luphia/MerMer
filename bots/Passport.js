@@ -83,6 +83,7 @@ Bot.prototype.facebook_callback = function (req, res, next) {
 		if(err) {
 			err.code = '68101';
 			res.result.setError(err);
+			next();
 		}
 		else if(!user) {
 			// auth failed
@@ -90,6 +91,7 @@ Bot.prototype.facebook_callback = function (req, res, next) {
 			e.code = '68101';
 			res.result.setErrorCode(e.code);
 			res.result.setMessage(e.message);
+			next();
 		}
 		else {
 			self.getToken(user, function (e, d) {
@@ -109,6 +111,7 @@ Bot.prototype.facebook_callback = function (req, res, next) {
 					res.result.setData(d);
 					res.result.setSession({uid: d.uid});
 				}
+				next();
 			});
 		}
 	})(req, res, next);
@@ -120,6 +123,7 @@ Bot.prototype.facebook_token = function (req, res, next) {
 		if(err) {
 			err.code = '68101';
 			res.result.setError(err);
+			next();
 		}
 		else if(!user) {
 			// auth failed
