@@ -80,34 +80,27 @@ Bot.prototype.facebook_authenticate = function (req, res, next) {
 Bot.prototype.facebook_callback = function (req, res, next) {
 	var self = this;
 	passport.authenticate('facebook', function (err, user, info) {
-		if(err) {
-			err.code = '68101';
-			res.result.setError(err);
-			next();
-		}
-		else if(!user) {
+		if(err || !user) {
 			// auth failed
-			var e = new Error('Facebook authorization failed');
+			var e = new Error('view:facebook_callback');
 			e.code = '68101';
-			res.result.setErrorCode(e.code);
-			res.result.setMessage(e.message);
+			res.result.setError(e);
 			next();
 		}
 		else {
 			self.getToken(user, function (e, d) {
 				if(e) {
-					res.result.setErrorCode(e.code);
-					res.result.setMessage(e.message);
+					res.result.setError(e);
+					res.result.setMessage('view:facebook_callback');
 				}
 				else if(!d) {
-					var e = new Error('Facebook authorization failed');
+					var e = new Error('view:facebook_callback');
 					e.code = '68101';
-					res.result.setErrorCode(e.code);
-					res.result.setMessage(e.message);
+					res.result.setError(e);
 				}
 				else {
 					res.result.setResult(1);
-					res.result.setMessage('Login with Facebook');
+					res.result.setMessage('view:facebook_callback');
 					res.result.setData(d);
 					res.result.setSession({uid: d.uid});
 				}
