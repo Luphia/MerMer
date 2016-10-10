@@ -82,12 +82,13 @@ errorHandler = function (err, req, res, next) {
 	}
 };
 returnData = function(req, res, next) {
-	var session, json, isFile, isURL;
+	var session, json, isFile, isURL, isView;
 
 	if(!res.finished) {
 		json = res.result.response();
-		isFile = new RegExp("^[a-zA-Z0-9\-]+/[a-zA-Z0-9\-\.]+$").test(json.message);
-		isURL = textype.isURL(json.message);
+		isView = new RegExp("^view:").test(json.message);
+		isFile = new RegExp("^file:").test(json.message);
+		isLink = new RegExp("^link:").test(json.message);
 		if(res.result.isDone()) {
 			session = res.result.getSession();
 
@@ -105,13 +106,18 @@ returnData = function(req, res, next) {
 			res.result.setMessage("Invalid operation");
 		}
 
-		if(isFile) {
-			res.header('Content-Type', json.message);
+		if(isView) {
+			var view = json.message.substr(5);
+			res.render(view, json);
+		}
+		else if(isFile) {
+			var content_type = json.message.substr(5);
+			res.header('Content-Type', content_type);
 			res.end(json.data);
 		}
-		else if(isURL) {
+		else if(isLink) {
 			var crawler;
-			var options = url.parse(json.message);
+			var options = url.parse(json.message.substr(5));
 			options.method = 'GET';
 			switch(options.protocol) {
 				case 'http:':
@@ -229,6 +235,7 @@ Bot.prototype.init = function(config) {
 
 	this.app.set('port', this.serverPort.pop());
 	this.app.set('portHttps', this.httpsPort.pop());
+	this.app.set('view engine', 'pug');
 	this.app.use(this.session);
 	this.app.use('/auth/*', passportBot.initialize);
 	this.app.use(express.static(path.join(__dirname, '../public')));
@@ -247,10 +254,7 @@ Bot.prototype.init = function(config) {
 
 	// HOME
 	this.router.get('/', function (req, res, next) {
-		res.result.setResult(1);
-		res.result.setMessage('Application Information');
-		res.result.setData(self.config.package);
-		next();
+		res.render('index', {version: self.config.package});
 	});
 
 	// get system infomation
