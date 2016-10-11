@@ -37,7 +37,7 @@
     "passport": "latest",
     "passport-facebook": "latest",
     "passport-facebook-token": "latest",
-    "q": "latest",
+    "pug": "latest",
     "raid2x": "latest",
     "serve-favicon": "latest",
     "socket.io": "latest",
