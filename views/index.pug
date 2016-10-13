@@ -8,19 +8,52 @@ html(lang="en")
 			body {
 				background: #333;
 			}
+			.login {
+				position: fixed;
+				left: 50%;
+				top: 50%;
+				margin-left: -100px;
+				margin-top: -60px;
+				width: 200px;
+				height: 120px;
+			}
+			.container {
+				position: relative;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
 			a {
 				color: #ddd;
 				font-size: .8em;
 				line-height: 20px;
 				padding: 3px 10px;
-				border-radius: 10px;
+				border-radius: 15px;
 				background: #35a;
 				text-decoration: none;
 			}
 			a > i {
 				margin-right: 5px;
 			}
+			.login-area iframe {
+				border: 0px solid transparent;
+			}
+
+		script.
+			var c = io();
+			c.on('check login', function () {
+				console.log('check login');
+			})
+			var openLogin = function () {
+				
+			};
+			var loginResult = function (rs, cb) {
+				console.log(rs);
+				cb();
+			};
 	body
-		a(href="/auth/facebook" traget="login_frame")
-			i.fa.fa-2x.fa-facebook-square
-			|  Login
+		div(class="login")
+			div(class="container")
+				a(href="https://localhost/auth/facebook" target="_loginFrame")
+					i.fa.fa-2x.fa-facebook-square
+					|  Login

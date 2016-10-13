@@ -30,6 +30,7 @@ Bot.prototype.start = function () {
 	sio.on('connection', function (socket) {
 		user.push(socket);
 		socket.user = {};
+		socket.emit('check login');
 		socket.on('authorization', function (token) {
 			self.getBot('User').checkToken(token, function (e, d) {
 				var result = new ecresult();

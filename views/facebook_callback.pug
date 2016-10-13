@@ -5,4 +5,7 @@ html(lang="en")
 			var result = !{JSON.stringify(result).replace(/<\//g, '<\\/')};
 			var message = !{JSON.stringify(message).replace(/<\//g, '<\\/')};
 			var data = !{JSON.stringify(data).replace(/<\//g, '<\\/')};
+			window.opener.loginResult({result: result, message: message, data: data}, function () {
+				window.close();
+			});	
 	body
