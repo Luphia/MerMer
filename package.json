@@ -41,6 +41,7 @@
     "raid2x": "latest",
     "serve-favicon": "latest",
     "socket.io": "latest",
+    "spdy": "latest",
     "textype": "latest",
     "tingodb": "latest"
   }

@@ -27,7 +27,13 @@ var pathCert = path.join(__dirname, '../config/cert.pfx'),
 		pathPw = path.join(__dirname, '../config/pw.txt'),
 		logger;
 
-var checkLogin, checkHashCash, errorHandler, returnData;
+var requireHttps, checkLogin, checkHashCash, errorHandler, returnData;
+requireHttps = function (req, res, next) {
+	if (!req.secure) {
+		return res.redirect('https://' + req.headers.host + req.url);
+	}
+	next();
+}
 checkLogin = function (req, res, next) {
 	if(req.session.uid === undefined) {
 		res.result.setErrorCode('10201');
@@ -207,7 +213,7 @@ Bot.prototype.init = function(config) {
 		this.pfx = fs.readFileSync(pathCert);
 		this.pfxpw = fs.readFileSync(pathPw);
 
-		this.https = require('https').createServer({
+		this.https = require('spdy').createServer({
 			pfx: this.pfx,
 			passphrase: this.pfxpw
 		}, this.app);
@@ -236,6 +242,7 @@ Bot.prototype.init = function(config) {
 	this.app.set('port', this.serverPort.pop());
 	this.app.set('portHttps', this.httpsPort.pop());
 	this.app.set('view engine', 'pug');
+	this.app.use(requireHttps);
 	this.app.use(this.session);
 	this.app.use('/auth/*', passportBot.initialize);
 	this.app.use(express.static(path.join(__dirname, '../public')));
