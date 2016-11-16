@@ -4,6 +4,10 @@ const url = require('url');
 const passport = require('passport');
 const FacebookStrategy = require('passport-facebook').Strategy;
 const FacebookTokenStrategy = require('passport-facebook-token');
+const TwitterStrategy = require('passport-twitter').Strategy;
+const TwitterTokenStrategy = require('passport-twitter-token');
+const GoogleStrategy = require('passport-google').Strategy;
+const GoogleTokenStrategy = require('passport-google-token');
 
 var Bot = function (config) {
 	if (!config) config = {};
@@ -40,7 +44,10 @@ Bot.prototype.init = function (config) {
 			}
 		};
 		self.getUserID(user, done);
-	}
+	};
+	var twitterProcess = function (identifier, done) {
+		console.log(identifier);
+	};
 
 	passport.use(new FacebookStrategy({
 			clientID: config.facebook.id,
@@ -58,12 +65,20 @@ Bot.prototype.init = function (config) {
 		facebookProcess
 	));
 	passport.serializeUser(function(user, done) {
-			done(null, user);
+		done(null, user);
 	});
 
 	passport.deserializeUser(function(user, done) {
-			done(null, user);
+		done(null, user);
 	});
+
+	passport.use(new TwitterStrategy({
+			consumerKey: config.twitter.id,
+			consumerSecret: config.twitter.secret
+			callbackURL: url.resolve(config.url)
+		},
+		twitterProcess
+	));
 
 };
 

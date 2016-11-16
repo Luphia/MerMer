@@ -254,10 +254,14 @@ Bot.prototype.init = function(config) {
 	this.app.use(returnData);
 	this.ctrl = [];
 
-	// passport
+	// passport facebook
 	this.router.get('/auth/facebook', function (req, res, next) { passportBot.facebook_authenticate(req, res, next); });
 	this.router.get('/auth/facebook/callback', function (req, res, next) { passportBot.facebook_callback(req, res, next); });
 	this.router.get('/auth/facebook/token/:access_token', checkHashCash, function (req, res, next) { passportBot.facebook_token(req, res, next); });
+	// passport twitter
+	this.router.get('/auth/twitter', function (req, res, next) { passportBot.twitter_authenticate(req, res, next); });
+	this.router.get('/auth/twitter/callback', function (req, res, next) { passportBot.twitter_callback(req, res, next); });
+	this.router.get('/auth/twitter/token/:access_token', checkHashCash, function (req, res, next) { passportBot.twitter_token(req, res, next); });
 
 	// HOME
 	this.router.get('/', function (req, res, next) {
