@@ -12,6 +12,15 @@ var Bot = class {
 		this.db = config._db;
 		this.logger = config._logger;
 		this.i18n = config._i18n;
+
+		super.getBot('Receptor').then(receptor => {
+			// method: get, post, put, delete, all
+			receptor.register(
+				{method: 'post', authorization: false, hashcash: false},
+				'/file/',
+				(options) => { return Promise.resolve(options); }
+			);
+		});
 		return Promise.resolve(this);
 	}
 	start() {

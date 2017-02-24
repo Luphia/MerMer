@@ -1,0 +1,17 @@
+#uploader {
+	display: block;
+	position: relative;
+	border: 3px dashed #666;
+	width: 600px;
+	height: 300px;
+	margin: auto;
+}
+#uploader::after {
+	position: absolute;
+	content: 'DROP FILE';
+	color: #aaa;
+	font-size: 3em;
+	text-align: center;
+	width: 100%;
+	line-height: 300px;
+}
