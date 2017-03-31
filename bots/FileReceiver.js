@@ -1,8 +1,12 @@
-var Bots = [];
+const path = require('path');
+const fs = require('fs');
 
-var Bot = class {
+const Parent = require(path.join(__dirname, '_Bot.js'));
+
+var Bot = class extends Parent {
 	constructor() {
-		Bots.push(this);
+		super();
+		this.name = path.parse(__filename).base.replace(/.js$/, '');
 	}
 	init(config) {
 		this.config = {};
@@ -13,26 +17,21 @@ var Bot = class {
 		this.logger = config._logger;
 		this.i18n = config._i18n;
 
+		return Promise.resolve(this);
+	}
+	start() {
 		super.getBot('Receptor').then(receptor => {
 			// method: get, post, put, delete, all
 			receptor.register(
-				{method: 'post', authorization: false, hashcash: false},
+				{method: 'all', authorization: false, hashcash: false},
 				'/file/',
 				(options) => { return Promise.resolve(options); }
 			);
 		});
-		return Promise.resolve(this);
-	}
-	start() {
 		return Promise.resolve(true);
 	}
 	ready() {
 		return Promise.resolve(true);
-	}
-	getBot(name) {
-		var condition = new RegExp('^' + name + '$', 'i');
-		var bot = Bots.find(function (b) { return condition.test(b.name) });
-		return Promise.resolve(bot);
 	}
 };
 
