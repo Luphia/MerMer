@@ -7,10 +7,6 @@ let $class = (classname) => {
 let $tag = (tag) => {
 	return document.getElementsByTagName(tag)[0];
 };
-let msg = (msg) => {
-	let tag = document.createElement("div");
-	tag.innerText = msg;
-};
 let addClass = (el, classname) => {
 	let classes = el.className.split(" ");
 	if(classes.indexOf(classname) == -1) {
@@ -32,7 +28,25 @@ let appendFile = (el, file) => {
 	div.innerText = [file.name, file.size].join(": ");
 	el.append(div);
 }
+let body = $tag("body");
+let appendHash = (data) => {
+	let div = document.createElement("div");
+	div.innerText = data.hash;
+	body.append(div);
+};
 
+let rw = new Worker('./rusha.min.js');
+rw.onmessage = (e) => {
+	if (e.data.error) {
+		console.log(e.data.error);
+	}
+	else {
+		appendHash(e.data)
+	}
+};
+let sha1Worker = (data) => {
+	rw.postMessage({ id: 0, data: data });
+};
 let readFile = (file) => {
 	let fr = new FileReader(),
 	chunkSize = 2097152,
@@ -47,7 +61,7 @@ let readFile = (file) => {
 		end = start + chunkSize >= file.size ? file.size : start + chunkSize;
 
 		fr.onload = () => {   
-			//console.log(fr.result);
+			sha1Worker(fr.result);
 			if (++chunk < chunks) {
 				loadNext();
 			}
@@ -56,6 +70,12 @@ let readFile = (file) => {
 	}
 
 	loadNext();
+};
+
+let notification = ({msg, duration}) => {
+	let container = $tag("body");
+	let msgTag = document.createElement("div");
+	msgTag.innerText = msg;
 };
 
 let area = $id('uploader');
