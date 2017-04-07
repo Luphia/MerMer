@@ -23,16 +23,17 @@ let removeClass = (el, classname) => {
 	}
 };
 
-let appendFile = (el, file) => {
-	let div = document.createElement("div");
-	div.innerText = [file.name, file.size].join(": ");
-	el.append(div);
-}
 let body = $tag("body");
-let appendHash = (data) => {
+let appendText = (data) => {
 	let div = document.createElement("div");
-	div.innerText = data.hash;
+	div.innerText = data;
 	body.append(div);
+};
+let appendFile = (el, file) => {
+	appendText([file.name, file.size].join(": "));
+}
+let appendHash = (data) => {
+	appendText(data.hash);
 };
 
 let rw = new Worker('./rusha.min.js');
@@ -48,28 +49,48 @@ let sha1Worker = (data) => {
 	rw.postMessage({ id: 0, data: data });
 };
 let readFile = (file) => {
-	let fr = new FileReader(),
 	chunkSize = 2097152,
 	chunks = Math.ceil(file.size / chunkSize),
 	chunk = 0;
 
-	let loadNext = () => {
-		var start, end,
-		blobSlice = File.prototype.mozSlice || File.prototype.webkitSlice || File.prototype.slice;
+	new Array(chunks).fill(0).map((v, i) => { return i; }).reduce((pre, curr) => {
+		return pre.then(() => {
+			let blobSlice = File.prototype.mozSlice || File.prototype.webkitSlice || File.prototype.slice;
+			let start, end, shard, method, path, data, responseType, options, request;
+			start = curr * chunkSize;
+			end = start + chunkSize >= file.size ? file.size : start + chunkSize;
+			shard = blobSlice.call(file, start, end);
+			method = "POST";
+			path = '/file/';
+			responseType = "json";
+			data = new FormData();
+			data.append("shard", shard);
+			data.append("total", chunks);
+			data.append("index", curr);
+			data.append("fileSize", file.size);
+			data.append("chunkSize", chunkSize);
+			options = {method, data, path, responseType}
 
-		start = chunk * chunkSize;
-		end = start + chunkSize >= file.size ? file.size : start + chunkSize;
-
-		fr.onload = () => {   
-			sha1Worker(fr.result);
-			if (++chunk < chunks) {
-				loadNext();
-			}
-		};
-		fr.readAsBinaryString(blobSlice.call(file, start, end));
-	}
-
-	loadNext();
+			request = new XMLHttpRequest();
+			if(responseType) { request.responseType = responseType; }
+			return new Promise((resolve, reject) => {
+				request.onload = function() {
+					resolve(request.response);
+					appendText("Upload: " + curr + " / " + chunks);
+				};
+				request.onreadystatechange = function (oEvent) {
+					if (request.readyState === 4) {
+						if(request.status != 200) {
+							reject(new Error(request.statusText));
+							console.log(request.statusText);
+						}
+					}
+				};
+				request.open(method, path);
+				request.send(data);
+			});
+		});
+	}, Promise.resolve());
 };
 
 let notification = ({msg, duration}) => {
