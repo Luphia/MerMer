@@ -1,13 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>MerMer</title>
-	<link rel="stylesheet" href="style.css">
+    <meta charset="utf-8">
+    <title>MerMer</title>
+    <script src="https://use.fontawesome.com/5c35984ec4.js"></script>
+    <style type="text/css">
+        html {
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+        body {
+            margin: 0px;
+            background-color: rgb(30, 30, 30);
+        }
+        div.header {
+            background: rgba(255, 255, 255, .7);
+            position: fixed;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            height: 60px;
+            z-index: 10;
+        }
+        div.logo {
+            position: absolute;
+            top: 200px;
+            margin-left: 50px;
+            margin-right: 50px;
+            width: 150px;
+            height: 150px;
+            display: block;
+            background: url(./resources/logo.png) no-repeat center center;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+        div.menu {
+            display: flex;
+        }
+        div.menu > div.category {
+            width: 50px;
+            text-align: center;
+            color: rgb(60, 60, 60);
+            margin: 15px 20px 15px 20px;
+            cursor: pointer;
+            border-bottom: solid 2px rgba(200, 30, 30, 0);
+            transition: all ease-in .3s;
+        }
+        div.menu > div.category:hover {
+            color: rgb(0, 0, 0);
+            border-bottom: solid 2px rgba(200, 30, 30, 1);
+        }
+        div.account {
+            display: flex;
+            width: 500px;
+        }
+        div.banner {
+            position: fixed;
+            top: 0px;
+            width: 100%;
+            height: 90%;
+            display: block;
+            background: url(./resources/background.jpg) no-repeat center 0px;
+            background-size: cover;
+        }
+        div.banner::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 200px;
+            bottom: 0px;
+            left: 0px;
+            background: linear-gradient(to bottom, rgba(30, 30, 30, 0) 0%,rgba(30, 30, 30, 1) 100%);
+        }
+
+        div.area {
+            width: 100%;
+            min-height: 500px;
+            position: absolute;
+            top: 300px;
+            padding-top: 200px;
+            line-height: 2em;
+            text-align: center;
+            overflow: auto;
+            z-index: 0;
+        }
+        div.area > div.cover {
+            position: absolute;
+            width: 100%;
+            height: 200px;
+            top: 0px;
+            left: 0px;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%,rgba(255, 255, 255, 1) 100%);
+        }
+        div.content {
+            background-color: #fff;
+            min-height: 800px;
+            padding-top: 10px;
+        }
+        div.container {
+            position: relative;
+        }
+
+        div.paper {
+            margin-top: 50px;
+            box-shadow: 25px 0 50px -4px rgba(0, 0, 0, 0.3), -25px 0 50px -4px rgba(0, 0, 0, 0.3);
+            min-height: 800px;
+            width: 80%;
+            margin-left: 10%;
+        }
+
+        div.musicPlayer {
+            position: fixed;
+            bottom: 0px;
+            border-top: solid 1px #666;
+            display: inline-flex;
+            background: linear-gradient(to bottom, rgb(60, 60, 60) 0%, rgb(30, 30, 30) 60%, rgb(40, 40, 40) 100%);
+            height: 50px;
+            width: 100%;
+        }
+        div.controller {
+            height: 50px;
+            color: rgb(150, 150, 150);
+            position: relative;
+        }
+        div.controller > .button {
+            line-height: 100%;
+            text-align: center;
+            width: 50px;
+            height: 50px;
+            margin-right: -4px;
+            display: inline-block;
+            line-height: 50px;
+            background: linear-gradient(to bottom, rgb(50, 50, 50) 0%, rgb(70, 70, 70) 50%, rgb(30, 30, 30) 51%, rgb(50, 50, 50) 100%);
+        }
+        .board {
+            border-radius: 5px;
+            border: solid 1px rgba(255, 255, 255, .8);
+            background: rgba(255, 255, 255, .5);
+            padding: 3em;
+            position: absolute;
+            margin-top: 300px;
+            margin-left: 50px;
+            width: 600px;
+        }
+        .title {
+            font-size: 4em;
+            color: rgb(51, 27, 25);
+        }
+        .description {
+            font-size: 2em;
+            color: rgb(51, 27, 25);
+        }
+        .uploadBox {
+        	position: fixed;
+        	left: 50%;
+        	margin-left: -45%;
+        	top: 50%;
+        	margin-top: -45%;
+        	width: 90%;
+        	height: 90%;
+        	background: rgba(0, 0, 0, .2);
+        	border-radius: 10px;
+        	border: 3px dashed rgba(0, 0, 0, .2);
+        }
+    </style>
 </head>
 <body>
-	<div id="uploader"></div>
-	<div id="container"></div>
-	<script src="script.js"></script>
+<div class="banner"></div>
+<div class="logo"></div>
+<div class="header">
+    <div class="menu">
+        <div class="category">類型</div>
+        <div class="category">心情</div>
+    </div>
+    <div class="account">
+        
+    </div>
+</div>
+<!--
+<div class="area">
+    <div class="cover"></div>
+    <div class="content">
+        <div class="paper">用音樂代表心情</div>
+    </div>
+</div>
+-->
+<div class="musicPlayer">
+    <div class="controller">
+        <div class="button"><i class="fa fa-step-backward"></i></div>
+        <div class="button"><i class="fa fa-play"></i></div>
+        <div class="button"><i class="fa fa-step-forward"></i></div>
+    </div>
+</div>
 </body>
 </html>
